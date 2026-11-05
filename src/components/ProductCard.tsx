@@ -1,12 +1,35 @@
-export default function ProductCard() {
-  const title = '무선 헤드폰';
-  const price = 59000;
+import type { Product } from '../data/products';
+
+// PPT 48쪽: 개별 title/price props를 product 객체 하나로 모읍니다.
+type ProductCardProps = {
+  product: Product;
+  onAddToCart: (product: Product) => void;
+};
+
+export default function ProductCard({
+  product,
+  onAddToCart,
+}: ProductCardProps) {
+  const { title, price, imageUrl, inStock } = product;
+
   return (
     <article className="product-card">
-      <img src="../public/Headphones.jpg" alt={title} />
-      <h2>{title}</h2>
-      <p className="price">{price}원</p>
-      <button type="button">장바구니 담기</button>
+      <img src={imageUrl} alt={title} />
+      <div className="product-info">
+        <h2>{title}</h2>
+        <p className="price">{price.toLocaleString('ko-KR')}원</p>
+        <p className={inStock ? 'stock available' : 'stock sold-out'}>
+          {inStock ? '구매 가능' : '품절'}
+        </p>
+        <button
+          type="button"
+          className="add-button"
+          disabled={!inStock}
+          onClick={() => onAddToCart(product)}
+        >
+          {inStock ? '장바구니 담기' : '품절'}
+        </button>
+      </div>
     </article>
- );
+  );
 }

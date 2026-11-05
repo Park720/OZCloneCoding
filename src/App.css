@@ -1,24 +1,22 @@
+/* 1. 기본 화면과 Vite 기본 스타일 초기화 */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
 
-html:root {
-  font-family: Arial, 'Malgun Gothic', sans-serif;
-  color: #18212b;
-  background: #e9edf0;
+:root {
   color-scheme: light;
 }
 
-html body {
+body {
   display: block;
   margin: 0;
   min-width: 320px;
   min-height: 100vh;
-  color: #18212b;
-  background: #e9edf0;
-  font-family: Arial, 'Malgun Gothic', sans-serif;
+  background: #f3f3f3;
+  color: #171b22;
+  font-family: 'Malgun Gothic', 'Noto Sans CJK KR', Arial, sans-serif;
   line-height: 1.5;
 }
 
@@ -40,89 +38,316 @@ button {
   cursor: pointer;
 }
 
-/* 2. Header: 로고, 검색창, 장바구니를 가로로 배치합니다. */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+  outline: 3px solid #ec8c10;
+  outline-offset: 4px;
+}
+
+/* 2. Header: 로고, 검색창, 장바구니 버튼 */
 .site-header {
+  position: relative;
+  z-index: 10;
   display: flex;
   align-items: center;
-  gap: 28px;
-  padding: 18px 32px;
-  color: #ffffff;
+  gap: 42px;
+  min-height: 104px;
+  padding: 24px 5%;
   background: #131921;
 }
 
-.site-header .logo {
-  flex-shrink: 0;
-  margin: 0;
-  padding: 0;
-  height: auto;
-  font-size: 32px;
-  font-weight: 700;
-  letter-spacing: -1.5px;
-  line-height: 1.2;
+.brand {
+  color: white;
+  font-size: 31px;
+  font-weight: 800;
+  white-space: nowrap;
 }
 
 .search {
   display: flex;
   flex: 1;
   min-width: 0;
-  max-width: 760px;
 }
 
 .search input {
   flex: 1;
-  width: 100%;
   min-width: 0;
-  padding: 12px 16px;
+  padding: 12px 18px;
   border: 0;
-  border-radius: 6px 0 0 6px;
-  color: #18212b;
-  background: #ffffff;
+  border-radius: 7px 0 0 7px;
+  font-size: 19px;
 }
 
 .search button {
-  flex-shrink: 0;
-  padding: 12px 22px;
+  padding: 0 25px;
   border: 0;
-  border-radius: 0 6px 6px 0;
-  color: #18212b;
+  border-radius: 0 7px 7px 0;
   background: #febd69;
+  color: #171b22;
+  font-size: 19px;
+  font-weight: 700;
+}
+
+.cart-area {
+  position: relative;
+}
+
+.cart-toggle {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 11px 14px;
+  border: 1px solid #526071;
+  border-radius: 7px;
+  background: transparent;
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
   white-space: nowrap;
 }
 
-.search button:hover {
-  background: #f3a847;
+.cart-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 30px;
+  height: 30px;
+  padding: 0 5px;
+  border-radius: 50%;
+  background: #febd69;
+  color: #171b22;
 }
 
-.site-header > span {
-  margin-left: auto;
-  white-space: nowrap;
+/* 3. CartPanel: 버튼 아래 오른쪽에 펼치는 장바구니 */
+.cart-panel {
+  position: absolute;
+  top: calc(100% + 16px);
+  right: 0;
+  width: 390px;
+  max-width: calc(100vw - 40px);
+  padding: 22px;
+  border: 1px solid #d8dce2;
+  border-radius: 12px;
+  background: white;
+  color: #171b22;
+  box-shadow: 0 12px 30px #0003;
 }
 
-/* 3. 본문: 콘텐츠의 최대 너비와 여백을 설정합니다. */
+.cart-panel h2 {
+  margin: 0 0 14px;
+  font-size: 24px;
+}
+
+.cart-empty {
+  margin: 12px 0 8px;
+  color: #5c6673;
+}
+
+.cart-items {
+  max-height: 370px;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.cart-items li {
+  display: grid;
+  grid-template-columns: 75px minmax(0, 1fr);
+  gap: 15px;
+  padding: 17px 0;
+  border-bottom: 1px solid #e3e6e9;
+}
+
+.cart-items img {
+  width: 75px;
+  height: 78px;
+  padding: 8px;
+  border-radius: 6px;
+  background: #edf0f3;
+  object-fit: contain;
+}
+
+.cart-items h3 {
+  margin: 0 0 5px;
+  font-size: 18px;
+  overflow-wrap: anywhere;
+}
+
+.cart-items p {
+  margin: 0 0 4px;
+  color: #5c6673;
+  font-size: 15px;
+}
+
+.cart-items strong {
+  font-size: 17px;
+}
+
+.cart-total {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  gap: 8px 16px;
+  margin: 20px 0 0;
+  font-size: 18px;
+}
+
+.cart-total strong {
+  color: #9c4b00;
+}
+
+/* 4. 상품 목록과 ProductCard */
 .page {
-  max-width: 1080px;
+  max-width: 1370px;
   margin: 0 auto;
-  padding: 34px 24px 48px;
+  padding: 40px 42px 60px;
 }
 
-.page > h1 {
-  margin: 0 0 28px;
-  font-size: 30px;
-  line-height: 1.4;
+.eyebrow {
+  color: #985100;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
 }
 
-/* 4. 상품 목록: 넓은 화면에서는 같은 너비의 두 열을 만듭니다. */
+h1 {
+  margin: 10px 0;
+  font-size: 37px;
+  line-height: 1.35;
+}
+
+.result-count {
+  margin: 16px 0 26px;
+  color: #5c6673;
+  font-size: 18px;
+}
+
 .product-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 24px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 26px;
 }
 
-/* 5. ProductCard: 이미지, 상품명, 가격, 버튼을 꾸밉니다. */
 .product-card {
-  min-width: 0;
+  overflow: hidden;
+  border: 1px solid #d9dee4;
+  border-radius: 10px;
+  background: white;
+}
+
+.product-card img {
+  display: block;
+  width: 100%;
+  height: 210px;
   padding: 24px;
-  border: 1px solid #d5d9d9;
-  border-radius: 8px;
-  background: #ffffff;
+  background: #e9edf0;
+  object-fit: contain;
+}
+
+.product-info {
+  padding: 21px 24px 24px;
+}
+
+.product-card h2 {
+  margin: 0 0 12px;
+  font-size: 24px;
+}
+
+.price {
+  margin: 0 0 12px;
+  font-size: 27px;
+  font-weight: 700;
+}
+
+.stock {
+  margin: 10px 0 16px;
+  font-size: 16px;
+}
+
+.available {
+  color: #18743c;
+}
+
+.sold-out {
+  color: #686f78;
+}
+
+.add-button {
+  width: 100%;
+  padding: 12px 20px;
+  border: 0;
+  border-radius: 24px;
+  background: #ffd814;
+  color: #171b22;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.add-button:hover:not(:disabled) {
+  background: #f7ca00;
+}
+
+.add-button:disabled {
+  background: #e2e4e6;
+  color: #666;
+  cursor: not-allowed;
+}
+
+.empty-message {
+  padding: 85px 20px;
+  border: 1px solid #ddd;
+  background: white;
+  font-size: 25px;
+  text-align: center;
+}
+
+/* 5. 작은 화면에서는 검색창과 상품을 한 줄씩 배치 */
+@media (max-width: 850px) {
+  .site-header {
+    flex-wrap: wrap;
+    gap: 16px;
+    padding: 18px 20px;
+  }
+
+  .brand {
+    flex: 1;
+  }
+
+  .search {
+    order: 3;
+    flex-basis: 100%;
+  }
+
+  .cart-area {
+    order: 2;
+  }
+
+  .cart-panel {
+    top: calc(100% + 80px);
+  }
+
+  .product-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .page {
+    padding: 28px 20px;
+  }
+
+  h1 {
+    font-size: 30px;
+  }
+}
+
+@media (max-width: 400px) {
+  .brand {
+    font-size: 26px;
+  }
+
+  .cart-toggle {
+    gap: 8px;
+    padding: 11px 10px;
+  }
 }
