@@ -2,7 +2,6 @@ import { Link } from 'react-router';
 import type { Product } from '../data/products';
 import { formatPrice } from '../utils/formatPrice';
 
-// 개별 title/price props를 product 객체 하나로 모읍니다.
 type ProductCardProps = {
   product: Product;
   onAddToCart: (product: Product) => void;

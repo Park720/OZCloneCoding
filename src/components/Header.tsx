@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { Link } from 'react-router';
 import type { CartItem } from '../types/cart';
 import CartPanel from './CartPanel';
 
@@ -10,23 +11,21 @@ type HeaderProps = {
 };
 
 export default function Header({
-  onSearch,
-  cart,
-  cartCount,
-  cartTotal,
+  onSearch, cart, cartCount, cartTotal,
 }: HeaderProps) {
-  // query는 입력 중인 값, App의 searchTerm은 제출한 값입니다.
+  // 입력 중인 query와 App에 제출된 searchTerm은 다른 값입니다.
   const [query, setQuery] = useState('');
   const [isCartOpen, setIsCartOpen] = useState(false);
 
   return (
     <header className="site-header">
-      <span className="brand">OZ Shop</span>
+      <Link className="brand" to="/">OZ Shop</Link>
       <form
         className="search"
         onSubmit={(event) => {
           event.preventDefault();
           onSearch(query.trim());
+          setIsCartOpen(false);
         }}
       >
         <input
@@ -38,17 +37,15 @@ export default function Header({
         />
         <button type="submit">검색</button>
       </form>
-
-      {/*  카트 버튼은 검색 form 바깥에 둡니다. */}
       <div className="cart-area">
         <button
-          type="button"
           className="cart-toggle"
+          type="button"
           aria-expanded={isCartOpen}
           aria-controls="cart-panel"
           onClick={() => setIsCartOpen((prev) => !prev)}
         >
-          장바구니
+          <span>장바구니</span>
           <span className="cart-badge" aria-live="polite">{cartCount}</span>
         </button>
         {isCartOpen && <CartPanel items={cart} total={cartTotal} />}
