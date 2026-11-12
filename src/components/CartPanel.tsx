@@ -1,11 +1,11 @@
 import type { CartItem } from '../types/cart';
+import { formatPrice } from '../utils/formatPrice';
 
 type CartPanelProps = {
   items: CartItem[];
   total: number;
 };
 
-// PPT 56~58쪽을 하나로 합친 컴포넌트입니다.
 export default function CartPanel({ items, total }: CartPanelProps) {
   return (
     <aside id="cart-panel" className="cart-panel" aria-labelledby="cart-heading">
@@ -22,8 +22,7 @@ export default function CartPanel({ items, total }: CartPanelProps) {
                   <h3>{item.product.title}</h3>
                   <p>수량 {item.quantity}개</p>
                   <strong>
-                    {(item.product.price * item.quantity)
-                      .toLocaleString('ko-KR')}원
+                    {formatPrice(item.product.price * item.quantity)}
                   </strong>
                 </div>
               </li>
@@ -31,7 +30,7 @@ export default function CartPanel({ items, total }: CartPanelProps) {
           </ul>
           <p className="cart-total">
             <span>상품 합계</span>
-            <strong>{total.toLocaleString('ko-KR')}원</strong>
+            <strong>{formatPrice(total)}</strong>
           </p>
         </>
       )}

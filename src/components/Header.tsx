@@ -2,7 +2,6 @@ import { useState } from 'react';
 import type { CartItem } from '../types/cart';
 import CartPanel from './CartPanel';
 
-// PPT 52쪽: 검색 함수와 App에서 계산한 장바구니 값을 받습니다.
 type HeaderProps = {
   onSearch: (keyword: string) => void;
   cart: CartItem[];
@@ -40,7 +39,7 @@ export default function Header({
         <button type="submit">검색</button>
       </form>
 
-      {/* PPT 54쪽: 카트 버튼은 검색 form 바깥에 둡니다. */}
+      {/*  카트 버튼은 검색 form 바깥에 둡니다. */}
       <div className="cart-area">
         <button
           type="button"

@@ -1,6 +1,8 @@
+import { Link } from 'react-router';
 import type { Product } from '../data/products';
+import { formatPrice } from '../utils/formatPrice';
 
-// PPT 48쪽: 개별 title/price props를 product 객체 하나로 모읍니다.
+// 개별 title/price props를 product 객체 하나로 모읍니다.
 type ProductCardProps = {
   product: Product;
   onAddToCart: (product: Product) => void;
@@ -10,24 +12,27 @@ export default function ProductCard({
   product,
   onAddToCart,
 }: ProductCardProps) {
-  const { title, price, imageUrl, inStock } = product;
-
   return (
     <article className="product-card">
-      <img src={imageUrl} alt={title} />
-      <div className="product-info">
-        <h2>{title}</h2>
-        <p className="price">{price.toLocaleString('ko-KR')}원</p>
-        <p className={inStock ? 'stock available' : 'stock sold-out'}>
-          {inStock ? '구매 가능' : '품절'}
+      <Link className="product-link" to={`/products/${product.id}`}>
+        <img src={product.imageUrl} alt={product.title} />
+        <div className="product-info">
+          <h2>{product.title}</h2>
+          <p className="price">{formatPrice(product.price)}</p>
+          <span className="detail-hint">상세 정보 보기</span>
+        </div>
+      </Link>
+      <div className="product-actions">
+        <p className={product.inStock ? 'stock available' : 'stock sold-out'}>
+          {product.inStock ? '구매 가능' : '품절'}
         </p>
         <button
-          type="button"
           className="add-button"
-          disabled={!inStock}
+          type="button"
+          disabled={!product.inStock}
           onClick={() => onAddToCart(product)}
         >
-          {inStock ? '장바구니 담기' : '품절'}
+          {product.inStock ? '장바구니 담기' : '품절'}
         </button>
       </div>
     </article>
