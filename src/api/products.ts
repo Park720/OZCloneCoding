@@ -1,42 +1,22 @@
 import type { Product } from '../data/products';
+import { supabase } from '../lib/supabase';
 
-// 다음 백엔드 수업에서는 이 주소와 아래 응답 변환 부분을 연결합니다.
-export const PRODUCTS_URL =
-  'https://dummyjson.com/products/category/smartphones?limit=6';
-
-// 서버가 보내는 모양입니다. 우리 Product와 필드 이름이 다릅니다.
-// TypeScript 타입 선언 자체가 실제 JSON을 검사해 주지는 않습니다.
-type ApiProduct = {
-  id: number;
-  title: string;
-  price: number;
-  thumbnail: string;
-  description: string;
-  stock: number;
-};
-
-type ProductsResponse = {
-  products: ApiProduct[];
-};
-
+// Supabase의 products 테이블에서 상품을 가져옵니다.
+// App.tsx는 그대로 두고, 이 함수 안쪽만 DummyJSON에서 Supabase로 바꿨습니다.
 export async function fetchProducts(signal: AbortSignal): Promise<Product[]> {
-  // 메서드를 따로 지정하지 않은 fetch의 기본 요청은 GET입니다.
-  const response = await fetch(PRODUCTS_URL, { signal });
+  const { data, error } = await supabase
+    .from('products')
+    // DB 열 이름(image_url, in_stock)을 Product 필드 이름(imageUrl, inStock)으로 바꿔 받습니다.
+    .select('id, title, price, imageUrl:image_url, inStock:in_stock, description')
+    .order('id')
+    // App이 요청을 취소하면(AbortController) 이 요청도 함께 취소됩니다.
+    .abortSignal(signal);
 
-  // 404나 500 응답도 fetch는 응답으로 반환하므로 직접 확인합니다.
-  if (!response.ok) {
-    throw new Error(`상품 요청에 실패했습니다. HTTP ${response.status}`);
+  // 허용(grant)이 없거나 테이블 이름이 틀리면 error가 옵니다.
+  // 정책(RLS)이 없으면 error 없이 빈 배열이 옵니다.
+  if (error) {
+    throw new Error(`상품 요청에 실패했습니다. ${error.message}`);
   }
 
-  const data: ProductsResponse = await response.json();
-
-  // API의 필드를 기존 카드·상세가 사용하는 Product 모양으로 바꿉니다.
-  return data.products.map((item) => ({
-    id: item.id,
-    title: item.title,
-    price: item.price,
-    imageUrl: item.thumbnail,
-    description: item.description,
-    inStock: item.stock > 0,
-  }));
+  return data;
 }
